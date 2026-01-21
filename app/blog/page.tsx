@@ -3,6 +3,8 @@ import Link from "next/link";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import Pagination from '@/components/Pagination';
+import { POSTS_PER_PAGE } from '@/lib/config';
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -49,8 +51,22 @@ async function getPosts(): Promise<Post[]> {
   return posts;
 }
 
-export default async function BlogPage() {
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const params = await searchParams;
+  const currentPage = parseInt(params.page || "1", 10);
+  
   const posts = await getPosts();
+  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+  
+  // Validate current page
+  const validPage = Math.max(1, Math.min(currentPage, totalPages || 1));
+  const startIdx = (validPage - 1) * POSTS_PER_PAGE;
+  const endIdx = startIdx + POSTS_PER_PAGE;
+  const paginatedPosts = posts.slice(startIdx, endIdx);
 
   return (
     <div className="min-h-screen bg-white dark:bg-black py-12 px-4 sm:px-6 lg:px-8">
@@ -64,8 +80,9 @@ export default async function BlogPage() {
             No posts yet. Check back soon!
           </p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
-            {posts.map((post) => (
+          <>
+            <div className="grid gap-6 md:grid-cols-2">
+              {paginatedPosts.map((post) => (
               <Link key={post.slug} href={`/blog/${post.slug}`}>
                 <div className="h-full p-6 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer">
                   <h2 className="text-xl font-semibold text-black dark:text-white mb-2">
@@ -85,8 +102,12 @@ export default async function BlogPage() {
                   </p>
                 </div>
               </Link>
-            ))}
-          </div>
+              ))}
+            </div>
+            {totalPages > 1 && (
+              <Pagination currentPage={validPage} totalPages={totalPages} baseUrl="/blog" />
+            )}
+          </>
         )}
       </div>
     </div>
