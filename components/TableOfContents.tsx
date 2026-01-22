@@ -16,7 +16,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   }
 
   return (
-    <nav className="mb-8 p-4 bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800">
+    <nav className="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 lg:bg-transparent lg:border-0 lg:p-0">
       <h3 className="text-sm font-semibold text-black dark:text-white mb-3">
         Table of Contents
       </h3>

@@ -108,42 +108,58 @@ export default async function PostPage({ params }: { params: Promise<PostParams>
       )}
 
       {/* Content */}
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="mb-8">
-          <Link href="/blog" className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block">
-            ← Back to blog
-          </Link>
-
-          <h1 className="text-4xl font-bold text-black dark:text-white mb-4">
-            {post.data.title}
-          </h1>
-
-          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
-            {post.data.date && (
-              <time className="text-zinc-600 dark:text-zinc-400">
-                {new Date(post.data.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </time>
-            )}
-          </div>
-
-          {post.data.description && (
-            <p className="text-lg text-zinc-600 dark:text-zinc-300 mt-4">
-              {post.data.description}
-            </p>
+      <div className="px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-6xl mx-auto lg:grid lg:grid-cols-4 lg:gap-8">
+          {/* Sidebar - Table of Contents */}
+          {headings.length > 0 && (
+            <aside className="hidden lg:block lg:col-span-1">
+              <div className="sticky top-24">
+                <TableOfContents headings={headings} />
+              </div>
+            </aside>
           )}
-        </div>
 
-        {/* Table of Contents */}
-        <TableOfContents headings={headings} />
+          {/* Main Content */}
+          <div className={headings.length > 0 ? "lg:col-span-3" : ""}>
+            {/* Header */}
+            <div className="mb-8">
+              <Link href="/blog" className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block">
+                ← Back to blog
+              </Link>
 
-        {/* MDX Content */}
-        <div className="prose prose-invert max-w-none">
-          <MDXRemote source={post.content} components={components} />
+              <h1 className="text-4xl font-bold text-black dark:text-white mb-4">
+                {post.data.title}
+              </h1>
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                {post.data.date && (
+                  <time className="text-zinc-600 dark:text-zinc-400">
+                    {new Date(post.data.date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </time>
+                )}
+              </div>
+
+              {post.data.description && (
+                <p className="text-lg text-zinc-600 dark:text-zinc-300 mt-4">
+                  {post.data.description}
+                </p>
+              )}
+            </div>
+
+            {/* Table of Contents - Mobile Only */}
+            <div className="lg:hidden mb-8">
+              <TableOfContents headings={headings} />
+            </div>
+
+            {/* MDX Content */}
+            <div className="prose prose-invert max-w-none">
+              <MDXRemote source={post.content} components={components} />
+            </div>
+          </div>
         </div>
       </div>
     </article>
