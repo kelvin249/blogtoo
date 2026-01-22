@@ -4,6 +4,8 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import Link from "next/link";
+import { TableOfContents, extractHeadings } from "@/components/TableOfContents";
+import { components } from "@/components/MdxComponents";
 
 interface PostParams {
   slug: string;
@@ -89,6 +91,8 @@ export default async function PostPage({ params }: { params: Promise<PostParams>
     );
   }
 
+  const headings = extractHeadings(post.content);
+
   return (
     <article className="min-h-screen bg-white dark:bg-black">
       {/* Hero Image */}
@@ -134,16 +138,12 @@ export default async function PostPage({ params }: { params: Promise<PostParams>
           )}
         </div>
 
+        {/* Table of Contents */}
+        <TableOfContents headings={headings} />
+
         {/* MDX Content */}
         <div className="prose prose-invert max-w-none">
-          <MDXRemote source={post.content} />
-        </div>
-
-        {/* Footer */}
-        <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
-          <Link href="/blog" className="text-blue-600 dark:text-blue-400 hover:underline">
-            ← Back to blog
-          </Link>
+          <MDXRemote source={post.content} components={components} />
         </div>
       </div>
     </article>

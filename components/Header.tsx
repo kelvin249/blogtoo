@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import ThemeSwitcher from "./ThemeSwitcher";
+import ThemeSwitcher from './ThemeSwitcher';
 
 export default function Header() {
   const pathname = usePathname();
@@ -69,6 +69,26 @@ export default function Header() {
               }`}
             >
               About
+            </Link>
+             <Link
+              href="/tags"
+              className={`transition-colors ${
+                pathname.startsWith("/blog")
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white"
+              }`}
+            >
+              Tags
+            </Link>
+             <Link
+              href="/categories"
+              className={`transition-colors ${
+                pathname.startsWith("/blog")
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white"
+              }`}
+            >
+              Catagories
             </Link>
 
             {/* Theme Toggle */}

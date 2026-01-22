@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import { BackToTop } from "@/components/BackToTop";
 import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
@@ -32,6 +33,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Header />
           {children}
+          <BackToTop />
         </ThemeProvider>
       </body>
     </html>
