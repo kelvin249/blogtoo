@@ -31,9 +31,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-black`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <main>
           <Header />
           {children}
           <BackToTop />
+          </main>
         </ThemeProvider>
       </body>
     </html>

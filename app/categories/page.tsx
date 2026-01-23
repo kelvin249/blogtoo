@@ -47,11 +47,12 @@ async function getAllPostsWithCategories(): Promise<CategoriesData> {
         category: data.category || "Uncategorized",
       };
 
-      // Add post to category
-      if (!categoriesMap[post.category]) {
-        categoriesMap[post.category] = [];
+      // Add post to category - use non-null assertion since category is always set above
+      const category = post.category || "Uncategorized";
+      if (!categoriesMap[category]) {
+        categoriesMap[category] = [];
       }
-      categoriesMap[post.category].push(post);
+      categoriesMap[category].push(post);
     });
 
   // Sort posts within each category by date

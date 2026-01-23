@@ -2,29 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ThemeSwitcher from './ThemeSwitcher';
+import { MobileMenu } from './MobileMenu';
 
 export default function Header() {
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-
-  // useEffect(() => {
-  //   setMounted(true);
-  // }, []);
-
-  // // Don't show header on home page
-  // if (pathname === "/") {
-  //   return null;
-  // }
-
-  // if (!mounted) {
-  //   return null;
-  // }
-
-  // if (!mounted) {
-  //   return null;
-  // }
 
   return (
     <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black sticky top-0 z-50">
@@ -38,8 +21,8 @@ export default function Header() {
             BlogToo
           </Link>
 
-          {/* Navigation */}
-          <nav className="flex items-center gap-8">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-8">
             <Link
               href="/"
               className={`transition-colors ${
@@ -61,6 +44,26 @@ export default function Header() {
               Blog
             </Link>
             <Link
+              href="/tags"
+              className={`transition-colors ${
+                pathname.startsWith("/tags")
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white"
+              }`}
+            >
+              Tags
+            </Link>
+            <Link
+              href="/categories"
+              className={`transition-colors ${
+                pathname.startsWith("/categories")
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white"
+              }`}
+            >
+              Categories
+            </Link>
+            <Link
               href="/about"
               className={`transition-colors ${
                 pathname === "/about"
@@ -70,30 +73,16 @@ export default function Header() {
             >
               About
             </Link>
-             <Link
-              href="/tags"
-              className={`transition-colors ${
-                pathname.startsWith("/blog")
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white"
-              }`}
-            >
-              Tags
-            </Link>
-             <Link
-              href="/categories"
-              className={`transition-colors ${
-                pathname.startsWith("/blog")
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white"
-              }`}
-            >
-              Catagories
-            </Link>
 
             {/* Theme Toggle */}
             <ThemeSwitcher />
           </nav>
+
+          {/* Mobile Menu and Theme Toggle */}
+          <div className="flex items-center gap-4 md:hidden">
+            <ThemeSwitcher />
+            <MobileMenu pathname={pathname} />
+          </div>
         </div>
       </div>
     </header>

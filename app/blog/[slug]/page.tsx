@@ -6,6 +6,7 @@ import matter from "gray-matter";
 import Link from "next/link";
 import { TableOfContents, extractHeadings } from "@/components/TableOfContents";
 import { components } from "@/components/MdxComponents";
+import { Comments } from "@/components/Comments";
 
 interface PostParams {
   slug: string;
@@ -159,6 +160,9 @@ export default async function PostPage({ params }: { params: Promise<PostParams>
             <div className="prose prose-invert max-w-none">
               <MDXRemote source={post.content} components={components} />
             </div>
+
+            {/* Comments Section */}
+            <Comments slug={slug} />
           </div>
         </div>
       </div>
