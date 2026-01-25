@@ -7,6 +7,7 @@ import Link from "next/link";
 import { TableOfContents, extractHeadings } from "@/components/TableOfContents";
 import { components } from "@/components/MdxComponents";
 import { Comments } from "@/components/Comments";
+import PrevNextLinks from "@/components/PrevNextLinks";
 
 interface PostParams {
   slug: string;
@@ -34,6 +35,25 @@ async function getPost(slug: string) {
     data: data as PostData,
     content: mdxContent,
   };
+}
+
+async function getAllPosts() {
+  const postsDir = path.join(process.cwd(), "content/posts");
+  const files = fs.readdirSync(postsDir);
+
+  const posts = files
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => {
+      const slug = file.replace(".mdx", "");
+      const content = fs.readFileSync(path.join(postsDir, file), "utf-8");
+      const { data } = matter(content);
+      return {
+        slug,
+        title: (data as PostData).title || slug,
+      };
+    });
+
+  return posts;
 }
 
 export async function generateStaticParams() {
@@ -93,6 +113,12 @@ export default async function PostPage({ params }: { params: Promise<PostParams>
   }
 
   const headings = extractHeadings(post.content);
+  
+  // Get previous and next links
+  const allPosts = await getAllPosts();
+  const currentIndex = allPosts.findIndex((p) => p.slug === slug);
+  const previousItem = currentIndex > 0 ? allPosts[currentIndex - 1] : undefined;
+  const nextItem = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : undefined;
 
   return (
     <article className="min-h-screen bg-white dark:bg-black">
@@ -133,6 +159,7 @@ export default async function PostPage({ params }: { params: Promise<PostParams>
               </h1>
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                
                 {post.data.date && (
                   <time className="text-zinc-600 dark:text-zinc-400">
                     {new Date(post.data.date).toLocaleDateString("en-US", {
@@ -147,8 +174,9 @@ export default async function PostPage({ params }: { params: Promise<PostParams>
               {post.data.description && (
                 <p className="text-lg text-zinc-600 dark:text-zinc-300 mt-4">
                   {post.data.description}
-                </p>
+                </p>                
               )}
+
             </div>
 
             {/* Table of Contents - Mobile Only */}
@@ -157,12 +185,15 @@ export default async function PostPage({ params }: { params: Promise<PostParams>
             </div>
 
             {/* MDX Content */}
-            <div className="prose prose-invert max-w-none">
+            <div>
               <MDXRemote source={post.content} components={components} />
             </div>
 
             {/* Comments Section */}
             <Comments slug={slug} />
+
+            {/* Previous/Next Links */}
+            <PrevNextLinks previousItem={previousItem} nextItem={nextItem} />
           </div>
         </div>
       </div>

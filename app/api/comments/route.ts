@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { sendPhoneNotification, sendWebhookNotification } from "@/lib/notifications";
+import { sendWebhookNotification } from "@/lib/notifications";
 
 // Directory to store comments
 const COMMENTS_DIR = path.join(process.cwd(), "data/comments");
@@ -113,22 +113,12 @@ export async function POST(request: NextRequest) {
     // Save comments
     fs.writeFileSync(commentFile, JSON.stringify(comments, null, 2));
 
-    // Send phone notification to admin
-    // Try SMS first, fallback to webhook if available
-    const notificationSent = await sendPhoneNotification({
+    // Send webhook notification to admin
+    await sendWebhookNotification({
       slug,
       author: sanitizedAuthor,
       content: sanitizedContent,
-    }).catch(() => false);
-
-    if (!notificationSent) {
-      // Fallback to webhook notification if SMS fails
-      await sendWebhookNotification({
-        slug,
-        author: sanitizedAuthor,
-        content: sanitizedContent,
-      }).catch(() => {});
-    }
+    }).catch(() => {});
 
     return NextResponse.json(
       { success: true, message: "Comment submitted successfully" },
